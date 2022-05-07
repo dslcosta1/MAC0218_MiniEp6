@@ -1,0 +1,39 @@
+Aluno: Daniel Silva Lopes da Costa
+NUSP: 11302720
+
+PARTE 1 - Criando sua própria imagem
+
+# Criar a imagem
+docker image build . -t custom-caddy:2.5.0-alpine
+
+# Rodar o contêiner
+docker container run  --name my-caddy-server  -p 8080:80   -d custom-caddy:2.5.0-alpine
+
+# Achar o ID do container 
+docker ps
+
+# Copia o arquivo do host para o container
+docker cp $PWD/site/index.html f2c8b63b385a:/usr/src/pages
+
+# Outra alternativa seria fazer isso ainda na definição da imagem, usando o comando:
+COPY $(PWD)/site/index.html /usr/src/pages/
+# Esse caso também funciona, mas todos os containers, com essa imagem já teriam esse arquivo por padrão.
+
+# Para observar o site, digitamos o seguinte endereço no navegador:
+localhost:8080
+
+# Para fechar o container e eliminar, foi utilizado:
+docker container stop my-caddy-server
+docker container rm my-caddy-server
+
+PARTE 2 - Potencializando nosso Servidor para desenvolvimento
+
+# Criar a imagem
+docker image build . -t custom-caddy:2.5.0-alpine
+
+# Rodar o container, agora tendo um volume entre as pastas do site.
+docker container run        --name my-caddy-server    -p 8080:80   -v $PWD/site:/usr/src/pages    -d custom-caddy:2.5.0-alpine
+
+# Para fechar o container e eliminar, foi utilizado:
+docker container stop my-caddy-server
+docker container rm my-caddy-server
